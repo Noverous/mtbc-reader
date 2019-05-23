@@ -1,2 +1,2 @@
 # USB-Scale-Reader
-Digital USB Shipping Scale reader using Electron, for Mitch Vanduyn
+Digital USB Shipping Scale reader for Mettler Toledo BC scales, using Electron, for Mitch Vanduyn
