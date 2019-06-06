@@ -1,0 +1,30 @@
+{
+  "name": "test-app",
+  "version": "1.0.0",
+  "description": "A barebones refit of the stock Electron test app, used to test the MTBC scale library",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/theinventormann/usb-scale-reader/test-app",
+  "keywords": [
+    "Electron",
+    "test",
+    "app",
+    "scale",
+    "reader",
+    "demo"
+  ],
+  "author": "Alexei Gauvain",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^5.0.2",
+    "electron-rebuild": "^1.8.5"
+  },
+  "dependencies": {
+    "mettler-toledo-bc-reader": "0.0.10",
+    "node-gyp": "^4.0.0",
+    "node-hid": "^0.7.9",
+    "usb": "^1.6.0"
+  }
+}
