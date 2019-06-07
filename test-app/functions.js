@@ -5,9 +5,15 @@ var electronConsole = new nodeConsole.Console(process.stdout, process.stderr);
 
 electronConsole.log("MTBC Reader test application launched.");
 
-reader.scale.registerScale();
+//var scale = reader.Scale;
+reader.registerScale();
+reader.listenData();
 
 document.getElementById("TestButton").onclick = function(e) {
     //console.log("Button Pressed!");
-    console.log(reader.scale.getScaleWeightLb());
+    reader.registerScale();
+    reader.weightChanged.on("change", function(){
+        reader.registerScale();
+        console.log(reader.getScaleWeightLb());
+    });
 }
