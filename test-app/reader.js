@@ -13,9 +13,58 @@ exports.getScaleWeightLb = getScaleWeightLb;
 exports.getScaleWeightOz = getScaleWeightOz;
 exports.weightChanged = weightChanged;
 exports.listenData = listenData;
+exports.isPluggedIn = isPluggedIn;
+exports.getStatus = getStatus;
 
 function registerScale() {
     scale = new HID.HID(VID, PID);
+}
+
+function isPluggedIn() {
+    //get list of all devices
+    var devices = HID.devices();
+    var scaleFound = false;
+
+    //check through list of devices, see if any of them are the scale - if not, it's not plugged in or otherwise not registered to Windows
+    devices.forEach(function(device){
+        if (device.vendorId.toFixed() == VID && device.productId.toFixed() == PID) {
+            //console.log("Scale found!");
+            scaleFound = true;
+        }
+    })
+
+    return scaleFound;
+}
+function isFault() {
+    if (getStatus() == 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function isMoving() {
+    if (getStatus() == 3) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function isUnderZero() {
+    if (getStatus() == 5) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function isOverweight() {
+    if (getStatus() == 6) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function getStatus() {
@@ -75,19 +124,12 @@ function listenData() {
         //console.log("logging data!")
         var currentWeight = data[4];
         if (currentWeight != lastWeight) {
-            weightChanged.emit("change");
+            weightChanged.emit("change", currentWeight);
         }
-        
+
         lastWeight = currentWeight;
     });
     
-}
-
-function interruptData() {
-
-}
-
-function scaleConnected() {
 }
 
 function scaleRegistered() {
@@ -95,6 +137,14 @@ function scaleRegistered() {
 
 function roundToHundredth(num) {
     return parseFloat(num.toFixed(2));
+}
+
+function getScaleWeightRaw() {
+    var data = getByte();
+    //get weight from scale data packet
+    var weight = data[4];
+
+    return weight;
 }
 
 function getScaleWeightLb() {

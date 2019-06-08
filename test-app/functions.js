@@ -10,7 +10,8 @@ reader.registerScale();
 reader.listenData();
 
 document.getElementById("TestButton").onclick = function(e) {
-    //console.log("Button Pressed!");
+    console.log(reader.isPluggedIn());
+    console.log("Button Pressed!");
     reader.registerScale();
     reader.weightChanged.on("change", function(){
         reader.registerScale();
