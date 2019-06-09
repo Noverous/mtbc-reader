@@ -13,6 +13,7 @@ reader.scaleEvents.on("change", function(){
 
 document.getElementById("TestButton").onclick = function(e) {
     console.log(reader.readRegistered());
+    console.log("Weight is: "+reader.getWeightLb());
     //console.log(reader.scaleEvents.listeners().length);
     //console.log(reader.isPluggedIn());
     console.log("Button Pressed!");

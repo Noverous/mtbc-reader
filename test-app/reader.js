@@ -30,23 +30,20 @@ exports.resume = resume;
 exports.getByte = getByte;
 
 //attempt to register scale on startup
-if (isPluggedIn()) {
-    console.log("Preforming initial scale registration...");
-    registerScale();
-    //also attempt to register initial listener
-    listenScale();
-}
+console.log("Preforming initial scale registration...");
+registerScale();
 
-//keep scale registered:
-const interval = 2e3;
+const interval = 2000;
 const timeout = 0;
-//poll the OS every 2 seconds to keep the scale and listeners registered throughout unplugs and replugs
+//poll the OS every 2 seconds to keep the listener registered throughout unplugs and replugs
 //It's not elegant, but it's the best solution I have for now until node-usb-detection updates.
-asyncPoll(keepRegistered(), function() {return false;}, {interval, timeout} )
+asyncPoll(keepRegistered,false, {interval, timeout} )
 
 
 function registerScale() {
-    scale = new HID.HID(VID, PID);
+    if (isPluggedIn()) {
+        scale = new HID.HID(VID, PID);
+    }
 }
 
 function isPluggedIn() {
@@ -166,18 +163,16 @@ function resume() {
 
 function keepRegistered() {
     /*
-    Function polled asynchronously, used to keep listener and scale reference up-to-date through scale unplugs and changes
+    Function polled asynchronously, used to keep listener up-to-date through scale unplugs and changes
     */
     if (!readRegistered && isPluggedIn()) {
-        listenScale();
-    }
-
-    if (scale == undefined && isPluggedIn()) {
         registerScale();
+        listenScale();
     }
 }
 
 function listenScale() {
+
     //internal function used to begin listening for weight changes
     scale.on("error", function(err){
         console.log("Error occurred while listening, stopping data stream listener... (scale disconnected?)");
@@ -194,7 +189,7 @@ function listenScale() {
             //if weight has changed since last event, emit
             if (currentWeight != lastWeight && (!paused && isPluggedIn())) {
                 //console.log("Emitting!");
-                registerScale();
+                //registerScale();
                 scaleEvents.emit("change", getWeightLb());
             }
 
