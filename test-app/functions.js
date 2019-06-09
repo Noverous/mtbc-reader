@@ -1,4 +1,4 @@
-const reader = require('./reader');
+const reader = require('../mtbc-reader');
 const nodeConsole = require('console');
 
 var electronConsole = new nodeConsole.Console(process.stdout, process.stderr);

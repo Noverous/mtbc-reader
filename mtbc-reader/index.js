@@ -112,10 +112,6 @@ function getStatus() {
 
     var status = scale.getStatus();
 
-    switch(status) {
-        ...
-    }
-
     var data = getByte();
     var status = data[1];
     return status;
