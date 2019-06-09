@@ -1,20 +1,49 @@
+/*
+Basic JavaScript library built to allow developers to interface with MTBC scales; without setting your hair on fire.
+*/
+
 const HID = require('node-hid');
 const events = require('events');
-var weightChanged = new events.EventEmitter();
+const {asyncPoll} = require('async-poll');
+
+var scaleEvents = new events.EventEmitter();
 
 var scale;
+var paused = false;
+var readRegistered = false;
 var VID = 3768;
 var PID = 61440;
 
-exports.scaleConnected = scaleConnected;
-exports.registerScale = registerScale;
-exports.getScaleWeightKg = getScaleWeightKg;
-exports.getScaleWeightLb = getScaleWeightLb;
-exports.getScaleWeightOz = getScaleWeightOz;
-exports.weightChanged = weightChanged;
-exports.listenData = listenData;
+exports.readRegistered = function() {return readRegistered;}
+exports.getWeightKg = getWeightKg;
+exports.getWeightLb = getWeightLb;
+exports.getWeightOz = getWeightOz;
+exports.scaleEvents = scaleEvents;
 exports.isPluggedIn = isPluggedIn;
 exports.getStatus = getStatus;
+exports.isFault = isFault;
+exports.isMoving = isMoving;
+exports.isUnderZero = isUnderZero;
+exports.isOverweight = isOverweight;
+exports.pause = pause;
+exports.resume = resume;
+exports.getByte = getByte;
+
+//attempt to register scale on startup
+if (isPluggedIn()) {
+    console.log("Preforming initial scale registration...");
+    registerScale();
+    //also attempt to register initial listener
+    listenScale();
+}
+
+//keep scale registered:
+const interval = 2e3;
+const timeout = 0;
+//poll the OS every 2 seconds to keep the scale and listeners registered throughout unplugs and replugs
+//It's not elegant, but it's the best solution I have for now until node-usb-detection updates.
+asyncPoll(keepRegistered(), function() {return false;}, {interval, timeout} )
+
 
 function registerScale() {
     scale = new HID.HID(VID, PID);
@@ -36,6 +65,7 @@ function isPluggedIn() {
     return scaleFound;
 }
 function isFault() {
+    //if scale is saying it's having an error:
     if (getStatus() == 1) {
         return true;
     } else {
@@ -44,6 +74,7 @@ function isFault() {
 }
 
 function isMoving() {
+    //if the scale is currently moving to accept or release weight
     if (getStatus() == 3) {
         return true;
     } else {
@@ -52,6 +83,7 @@ function isMoving() {
 }
 
 function isUnderZero() {
+    //if the scale is returning a value below zero (either negative numbers or simply refusing to display anything)
     if (getStatus() == 5) {
         return true;
     } else {
@@ -60,6 +92,7 @@ function isUnderZero() {
 }
 
 function isOverweight() {
+    //if the scale is encountering a load larger than it's intended max capacity
     if (getStatus() == 6) {
         return true;
     } else {
@@ -108,47 +141,79 @@ function getByte() {
     Byte 5: Scale weight MSB
     */
 
-    //attempt to get data packet from scale with a timeout of 250 ms
-    var byte = scale.readTimeout(250);
+    //register initial byte as all fields with 0, if the scale cannot be reached for whatever reason (likely unplugged) this will be returned instead.
+    var byte = [0,0,0,0,0];
+    //if scale is plugged in, attempt to get data packet from scale with a timeout of 250 ms
+    if (isPluggedIn()) {
+        try {
+            byte = scale.readTimeout(250);
+        } catch (err) {
+            console.log("Error caught while attempting to get scale packet, has the scale been unplugged?");
+        } 
+    }
     return byte;
 }
 
-function listenData() {
+function pause() {
+    //pause event listening
+    paused = true;
+}
+
+function resume() {
+    //resume event listening
+    paused = false;
+}
+
+function keepRegistered() {
+    /*
+    Function polled asynchronously, used to keep listener and scale reference up-to-date through scale unplugs and changes
+    */
+    if (!readRegistered && isPluggedIn()) {
+        listenScale();
+    }
+
+    if (scale == undefined && isPluggedIn()) {
+        registerScale();
+    }
+}
+
+function listenScale() {
+    //internal function used to begin listening for weight changes
     scale.on("error", function(err){
         console.log("Error occurred while listening, stopping data stream listener... (scale disconnected?)");
+        readRegistered = false;
     });
 
     var lastWeight;
 
-    scale.on("data", function(data){
-        //console.log("logging data!")
-        var currentWeight = data[4];
-        if (currentWeight != lastWeight) {
-            weightChanged.emit("change", currentWeight);
-        }
+    if (!readRegistered) {
+        scale.on("data", function(data){
+            readRegistered = true;
+            //console.log("logging data!")
+            var currentWeight = data[4];
+            //if weight has changed since last event, emit
+            if (currentWeight != lastWeight && (!paused && isPluggedIn())) {
+                //console.log("Emitting!");
+                registerScale();
+                scaleEvents.emit("change", getWeightLb());
+            }
 
-        lastWeight = currentWeight;
-    });
+            lastWeight = currentWeight;
+        });
+    }
     
 }
 
-function scaleRegistered() {
-}
-
 function roundToHundredth(num) {
+    //simple helper function to help make numbers cleaner
     return parseFloat(num.toFixed(2));
 }
 
-function getScaleWeightRaw() {
+function getWeightLb() {
+    //registerScale();
     var data = getByte();
-    //get weight from scale data packet
-    var weight = data[4];
 
-    return weight;
-}
-
-function getScaleWeightLb() {
-    var data = getByte();
+    //registerScale();
 
     //get weight from scale data packet
     var weight = data[4];
@@ -179,9 +244,9 @@ function getScaleWeightLb() {
     return weight;
 }
 
-function getScaleWeightKg() {
+function getWeightKg() {
     //get weight in pounds and convert to kg
-    var weight = getScaleWeightLb();
+    var weight = getWeightLb();
     weight /= 2.2;
 
     weight = roundToHundredth(weight);
@@ -189,18 +254,12 @@ function getScaleWeightKg() {
     return weight;
 }
 
-function getScaleWeightOz() {
+function getWeightOz() {
     //get weight in pounds and convert to oz
-    var weight = getScaleWeightLb()
+    var weight = getWeightLb()
     weight /= 0.0625
 
     weight = roundToHundredth(weight);
 
     return weight;
 }
-//unused testing function, will delete later
-/*
-exports.howManyDevices = function() {
-    return HID.devices();
-}
-*/
