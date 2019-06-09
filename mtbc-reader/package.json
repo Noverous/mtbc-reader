@@ -1,0 +1,22 @@
+{
+  "name": "mtbc-reader",
+  "version": "1.0.0",
+  "description": "Provides extensive support for interfacing with Mettler Toledo BC scales.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mettler",
+    "toledo",
+    "bc",
+    "scale",
+    "reader"
+  ],
+  "author": "Alexei Gauvain",
+  "license": "ISC",
+  "dependencies": {
+    "async-poll": "^1.4.0",
+    "node-hid": "^0.7.9"
+  }
+}
