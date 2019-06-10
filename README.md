@@ -28,7 +28,7 @@
 tbd
 
 ## Examples
-A basic example application is provided in the `src/` directory.
+A basic [example](./src/test-app/) application is provided in the `src/` directory.
 
 ## Usage
 
