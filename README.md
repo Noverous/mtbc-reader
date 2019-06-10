@@ -107,12 +107,15 @@ The status format is as follows:
 
 ### `.getWeightLb()`
 - Returns the scale weight in pounds, to the hundredth decimal point.
+- Note: If the scale is unplugged, any attempts to get the weight will return 0.
 
 ### `.getWeightKg()`
 - Returns the scale weight in kilograms, to the hundredth decimal point.
+- Note: If the scale is unplugged, any attempts to get the weight will return 0.
 
 ### `.getWeightOz()`
 - Returns the scale weight in ounces, to the hundredth deceimal point.
+- Note: If the scale is unplugged, any attempts to get the weight will return 0.
 
 ### `.events`
 - EventEmitter for weight change, use event "change".
