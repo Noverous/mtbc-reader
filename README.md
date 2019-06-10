@@ -30,6 +30,7 @@ tbd
 ## Examples
 A basic [example](./src/test-app/) application is provided in the `src/` directory.
 
+![image](./src/test-app/mtbc-reader.PNG/)
 ## Usage
 
 ### Reference the scale reader
