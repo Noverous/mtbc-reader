@@ -68,6 +68,13 @@ A number of helper functions are included in the library to obtain more informat
 
 ### Tell whether or not the scale is plugged in
 `scale.isPluggedIn()` Can be used to determine whether the scale is plugged in or not.
+```js
+if (scale.isPluggedIn()) {
+  console.log("Scale is plugged in!");
+} else {
+  console.log("Error: Scale is not plugged in!");
+}
+```
 
 Further helper functions are listed in the full API below.
 
