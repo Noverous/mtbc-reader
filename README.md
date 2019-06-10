@@ -167,5 +167,3 @@ Byte 3: Data scaling
 Byte 4: Scale Weight LSB
 Byte 5: Scale weight MSB
 ```
-
-Created for Mitch Vanduyn, by Alexei Gauvain
