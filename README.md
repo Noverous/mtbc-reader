@@ -25,8 +25,10 @@
     - [`.getByte()`](#getbyte)
     
 ## Installation
-```js
+```shell
 npm install mtbc-reader
+```
+```js
 const scale = require("mtbc-reader");
 ```
 
