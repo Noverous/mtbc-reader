@@ -25,6 +25,7 @@
     "async-poll": "^1.4.0",
     "async-polling": "^0.2.1",
     "mettler-toledo-bc-reader": "0.0.10",
+    "mtbc-reader": "file:../mtbc-reader",
     "node-gyp": "^4.0.0",
     "node-hid": "^0.7.9",
     "usb": "^1.6.0"

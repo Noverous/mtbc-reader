@@ -1,4 +1,4 @@
-const reader = require('../mtbc-reader');
+const reader = require('mtbc-reader');
 const nodeConsole = require('console');
 
 var electronConsole = new nodeConsole.Console(process.stdout, process.stderr);
@@ -7,12 +7,12 @@ electronConsole.log("MTBC Reader test application launched.");
 
 //reader.listenScale();
 
-reader.scaleEvents.on("change", function(){
+reader.events.on("change", function(){
     console.log(reader.getWeightLb());
 });
 
 document.getElementById("TestButton").onclick = function(e) {
-    console.log(reader.readRegistered());
+    //console.log(reader.readRegistered());
     console.log("Weight is: "+reader.getWeightLb());
     //console.log(reader.scaleEvents.listeners().length);
     //console.log(reader.isPluggedIn());
