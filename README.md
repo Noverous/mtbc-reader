@@ -25,7 +25,10 @@
     - [`.getByte()`](#getbyte)
     
 ## Installation
-tbd
+```js
+npm install mtbc-reader
+const scale = require("mtbc-reader");
+```
 
 ## Examples
 A basic [example](./src/test-app/) application is provided in the `src/` directory.
