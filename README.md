@@ -62,7 +62,7 @@ The event is better suited for live visual interfaces or any other situation whe
 The event stream can be paused with `scale.pause()` and resumed with `scale.resume()`
 
 - Note: if the scale is unplugged or otherwise unregistered the event will simply stop firing, it will not disconnect or throw any errors - `.isPluggedIn()` can be used to check status if required.
-- Note: The event only returns in pounds, you can either call .getWeightKg(), .getWeightOz(), or manually convert to another unit.
+- Note: The event only returns in pounds, you can either call .getWeightKg(), .getWeightOz() in the event callback, or manually convert to another unit.
 
 ## Getting the scale's status 
 A number of helper functions are included in the library to obtain more information about the scale.
