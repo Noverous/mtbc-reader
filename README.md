@@ -25,7 +25,7 @@
     - [`.getByte()`](#getbyte)
     
 ## Installation
-```shell
+```console
 npm install mtbc-reader
 ```
 ```js
