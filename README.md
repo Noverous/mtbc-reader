@@ -35,7 +35,7 @@ const scale = require("mtbc-reader");
 ## Examples
 A basic [example](./src/test-app/) application is provided in the `src/` directory.
 
-![image](./src/test-app/mtbc-reader.PNG/)
+![image](https://github.com/NovusInventorMan/mtbc-reader/blob/master/src/test-app/mtbc-reader.PNG)
 ## Usage
 
 ### Reference the scale reader
