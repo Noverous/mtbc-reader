@@ -5,12 +5,13 @@
     <title>MTBC-Reader Test Application</title>
   </head>
   <body>
-    <h1>MTBC-Reader Test Application</h1>
-    <p>Basic example application, built on the Electron Quick Start App.</p>
+    <h1 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">MTBC-Reader Test Application</h1>
+    <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Basic example application, built on the Electron Quick Start App.</p>
     <!-- All of the Node.js APIs are available in this renderer process. -->
 
-    Current live weight: <input type="number" id="WeightDisplay" value ="0.00" readonly><br>
-    <br>
+    <div>
+      <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Current live weight: <input type="number" id="WeightDisplay" value ="0.00" readonly></p>
+    </div>
     <div>
       <button id="TestButton" type="button">Test Connection</button>
       <input type="text" id="TestField" value="Scale Status:" readonly>
@@ -27,7 +28,7 @@
         <input type="number" id="WeightDisplay2" value ="0.00" readonly>
     </div>
 
-    <p>
+    <p style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
       We are using Node.js <script>document.write(process.versions.node)</script>,
       Chromium <script>document.write(process.versions.chrome)</script>,
       and Electron <script>document.write(process.versions.electron)</script>.
