@@ -162,6 +162,8 @@ function pause() {
 function resume() {
     //resume event listening
     paused = false;
+    //re-emit current weight
+    scaleEvents.emit("change", getWeightLb());
 }
 
 function keepRegistered() {
@@ -179,6 +181,7 @@ function listenScale() {
     //internal function used to begin listening for weight changes
     scale.on("error", function(err){
         console.log("Error occurred while listening, stopping data stream listener... (scale disconnected?)");
+        scaleEvents.emit("change", 0);
         readRegistered = false;
     });
 

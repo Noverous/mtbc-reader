@@ -2,21 +2,41 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>MTBC-Reader Test Application</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <h1>MTBC-Reader Test Application</h1>
+    <p>Basic example application, built on the Electron Quick Start App.</p>
     <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
 
-    <button id="TestButton" type="button">TestButton!</button>
+    Current live weight: <input type="number" id="WeightDisplay" value ="0.00" readonly><br>
+    <br>
+    <div>
+      <button id="TestButton" type="button">Test Connection</button>
+      <input type="text" id="TestField" value="Scale Status:" readonly>
+    </div>
+    <br>
+    <div>
+        <button id="PauseButton" type="button">Pause Weight Events</button> 
+        <button id="ResumeButton" type="button">Resume Weight Events</button> 
+        <input type="text" id="PlaybackField" value="Active" readonly>
+    </div>
+    <br>
+    <div>
+        <button id="WeightButton" type="button">Get Current Weight</button> 
+        <input type="number" id="WeightDisplay2" value ="0.00" readonly>
+    </div>
+
+    <p>
+      We are using Node.js <script>document.write(process.versions.node)</script>,
+      Chromium <script>document.write(process.versions.chrome)</script>,
+      and Electron <script>document.write(process.versions.electron)</script>.
+    </p>
 
     <script>
       // You can also require other files to run in this process
       require('./renderer.js')
-      require('./functions.js')
+      //require('./functions.js')
     </script>
   </body>
 </html>

@@ -37,7 +37,7 @@ A basic example application is provided in the `src/` directory.
 const scale = require('mtbc-reader')
 ```
 
-Manual registration of the scale is never required, the library handles all registration, connect, and disconnect events - you only need to reference the library to use it.
+Manual registration of the scale is never required, the library handles all scale/usb registration, connect, and disconnect events - you only need to reference the library to use it.
 
 ### Getting the weight from the scale
 There are two methods of obtaining the weight from the scale.
