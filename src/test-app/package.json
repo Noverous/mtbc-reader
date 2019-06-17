@@ -1,6 +1,6 @@
 {
   "name": "test-app",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "description": "A barebones refit of the stock Electron test app, used to test the MTBC scale library",
   "main": "main.js",
   "scripts": {
