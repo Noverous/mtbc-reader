@@ -3,6 +3,7 @@ Basic JavaScript library built to allow developers to interface with MTBC scales
 */
 
 const HID = require('node-hid');
+HID.setDriverType('libusb');
 const events = require('events');
 const {asyncPoll} = require('async-poll');
 
@@ -31,7 +32,7 @@ exports.getByte = getByte;
 
 //attempt to register scale on startup
 console.log("Preforming initial scale registration...");
-registerScale();
+//registerScale();
 
 const interval = 2000;
 const timeout = 0;
@@ -42,17 +43,7 @@ asyncPoll(keepRegistered,false, {interval, timeout} )
 
 function registerScale() {
     if (isPluggedIn()) {
-        //scale = new HID.HID(VID, PID);
-        var devices = HID.devices();
-        devices.forEach(function(device){
-            console.log("Testing device: "+device.productId.toFixed()+" and VID: "+device.vendorId.toFixed())
-            if (device.productId.toFixed() == PID && device.vendorId.toFixed() == VID) {
-                console.log("Scale found~!");
-                scale = device;
-                console.dir(device);
-                console.dir(scale);
-            }
-        });
+        scale = new HID.HID(VID, PID);
     }
 }
 
@@ -156,10 +147,14 @@ function getByte() {
     //if scale is plugged in, attempt to get data packet from scale with a timeout of 250 ms
     if (isPluggedIn()) {
         try {
-            byte = scale.readTimeout(250);
+            byte = scale.readTimeout(1000);
         } catch (err) {
             console.log("Error caught while attempting to get scale packet, has the scale been unplugged?");
         }
+        if(byte[4] == undefined) {
+            console.log("byte 4 is undefined");
+        }
+        console.log(byte);
         return byte;
     }
 }
@@ -201,12 +196,19 @@ function listenScale() {
         scale.on("data", function(data){
             readRegistered = true;
             //console.log("logging data!")
-            var currentWeight = data[4];
-            //if weight has changed since last event, emit
+            //if data is not a number, stop (for linux's sake)
+            if (!isNaN(data[4]) || data[4] == undefined) {
+                var currentWeight = data[4];
+            } else {
+                console.log("nan received!!!!! "+data[4])
+            }
+
+            //if weight has changed since last event, emit the event
             if (currentWeight != lastWeight && (!paused && isPluggedIn())) {
                 //console.log("Emitting!");
                 //registerScale();
                 scaleEvents.emit("change", getWeightLb());
+                console.log(data[4]);
             }
 
             lastWeight = currentWeight;
