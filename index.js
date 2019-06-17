@@ -42,7 +42,13 @@ asyncPoll(keepRegistered,false, {interval, timeout} )
 
 function registerScale() {
     if (isPluggedIn()) {
-        scale = new HID.HID(VID, PID);
+        //scale = new HID.HID(VID, PID);
+        var devices = HID.devices();
+        devices.forEach(element => {
+            if (element.PID.toFixed() == PID && element.VID.toFixed() == VID) {
+                scale = element;
+            }
+        });
     }
 }
 
@@ -149,7 +155,7 @@ function getByte() {
             byte = scale.readTimeout(250);
         } catch (err) {
             console.log("Error caught while attempting to get scale packet, has the scale been unplugged?");
-        } 
+        }
     }
     return byte;
 }
@@ -202,7 +208,7 @@ function listenScale() {
             lastWeight = currentWeight;
         });
     }
-    
+
 }
 
 function roundToHundredth(num) {

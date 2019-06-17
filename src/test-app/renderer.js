@@ -1,8 +1,16 @@
 //Obtain the reference to the scale, no further registration or checking is required - the library will handle everything else
-const scale = require('mtbc-reader');
+//const scale = require('mtbc-reader');
+const HID = require('node-hid')
 
 console.log("MTBC scale test application launched.");
 
+var devices = HID.devices();
+devices.forEach(element => {
+    console.log(element.vendorId + " " + element.productId);
+});
+
+
+/*
 //set initial connection status:
 document.getElementById("TestField").value = checkConnected()
 
@@ -11,7 +19,7 @@ scale.events.on("change", function(weight){
     //When the event is fired, display the weight in console
     console.log("Weight on scale changed! New weight is: " + weight);
     //And update the live view field
-    document.getElementById("WeightDisplay").value = weight; 
+    document.getElementById("WeightDisplay").value = weight;
 });
 
 //Listen to the connection test button click event
@@ -59,8 +67,8 @@ function checkConnected() {
         } else {
             statusString = "Scale is not plugged in."
         }
-    
+
         console.log(statusString);
-    
+
         return statusString;
-    }
+    }*/
