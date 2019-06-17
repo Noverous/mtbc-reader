@@ -45,8 +45,12 @@ function registerScale() {
         //scale = new HID.HID(VID, PID);
         var devices = HID.devices();
         devices.forEach(function(device){
+            console.log("Testing device: "+device.productId.toFixed()+" and VID: "+device.vendorId.toFixed())
             if (device.productId.toFixed() == PID && device.vendorId.toFixed() == VID) {
+                console.log("Scale found~!");
                 scale = device;
+                console.dir(device);
+                console.dir(scale);
             }
         });
     }
@@ -156,8 +160,8 @@ function getByte() {
         } catch (err) {
             console.log("Error caught while attempting to get scale packet, has the scale been unplugged?");
         }
+        return byte;
     }
-    return byte;
 }
 
 function pause() {

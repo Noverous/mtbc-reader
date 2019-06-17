@@ -1,14 +1,14 @@
 //Obtain the reference to the scale, no further registration or checking is required - the library will handle everything else
-const scale = require('mtbc-reader');
-const HID = require('node-hid')
+const scale = require('../../');
+//const HID = require('node-hid')
 
 console.log("MTBC scale test application launched.");
-
+/*
 var devices = HID.devices();
 devices.forEach(element => {
     console.log(element.vendorId + " " + element.productId);
 });
-
+*/
 
 
 //set initial connection status:
