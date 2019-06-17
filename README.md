@@ -31,8 +31,9 @@ npm install mtbc-reader
 ```js
 const scale = require("mtbc-reader");
 ```
-Currently tested for OS: Windows 10, Ubuntu 18
-Currently tested for hardware: MT PS60 scales
+Currently tested for OS: `Windows 10`, `Ubuntu 18 (with libusb)`
+
+Currently tested for hardware: `MT PS60 scales`
 
 ## Examples
 A basic [example](./src/test-app/) application is provided in the `src/` directory.
