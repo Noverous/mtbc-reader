@@ -168,9 +168,12 @@ function resume() {
 }
 
 function keepRegistered() {
+    console.log("keepRegistered() was called!");
     /*
     Function polled asynchronously, used to keep listener up-to-date through scale unplugs and changes
     */
+    console.log("readregistered: "+readRegistered);
+    console.log("isPluggedIn: "+isPluggedIn());
     if (!readRegistered && isPluggedIn()) {
         registerScale();
         listenScale();
@@ -189,8 +192,9 @@ function listenScale() {
     var lastWeight;
 
     if (!readRegistered) {
+        console.log("listener assigned");
+        readRegistered = true;
         scale.on("data", function (data) {
-            readRegistered = true;
             //console.log("logging data!")
 
             //var currentWeight = data[4];
