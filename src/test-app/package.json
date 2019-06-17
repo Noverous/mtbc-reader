@@ -24,7 +24,7 @@
   "dependencies": {
     "async-poll": "^1.4.0",
     "async-polling": "^0.2.1",
-    "mtbc-reader": "^1.1.0",
+    "mtbc-reader": "^1.1.2",
     "node-gyp": "^4.0.0",
     "node-hid": "^0.7.9"
   }
