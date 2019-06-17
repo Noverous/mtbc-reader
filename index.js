@@ -54,7 +54,7 @@ function registerScale() {
 
 function isPluggedIn() {
     //get list of all devices
-    var devices = HID.devices();s
+    var devices = HID.devices();
     var scaleFound = false;
 
     //check through list of devices, see if any of them are the scale - if not, it's not plugged in or otherwise not registered to Windows
