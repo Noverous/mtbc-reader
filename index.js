@@ -44,9 +44,9 @@ function registerScale() {
     if (isPluggedIn()) {
         //scale = new HID.HID(VID, PID);
         var devices = HID.devices();
-        devices.forEach(element => {
-            if (element.PID.toFixed == PID && element.VID.toFixed == VID) {
-                scale = element;
+        devices.forEach(function(device){
+            if (device.PID.toFixed() == PID && device.VID.toFixed() == VID) {
+                scale = device;
             }
         });
     }
