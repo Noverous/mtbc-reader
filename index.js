@@ -1,13 +1,16 @@
 /*
-Basic JavaScript library built to allow developers to interface with MTBC scales; without setting your hair on fire.
+Basic JavaScript library built to allow developers to interface with MTBC scales; *without setting your hair on fire.
 */
 
 const HID = require('node-hid');
 HID.setDriverType('libusb');
 const events = require('events');
-const {asyncPoll} = require('async-poll');
+const { asyncPoll } = require('async-poll');
 
 var scaleEvents = new events.EventEmitter();
+
+//current byte being accessed
+var currentByte = [0, 0, 0, 0, 0];
 
 var scale;
 var paused = false;
@@ -38,7 +41,7 @@ const interval = 2000;
 const timeout = 0;
 //poll the OS every 2 seconds to keep the listener registered throughout unplugs and replugs
 //It's not elegant, but it's the best solution I have for now until node-usb-detection updates.
-asyncPoll(keepRegistered,false, {interval, timeout} )
+asyncPoll(keepRegistered, false, { interval, timeout })
 
 
 function registerScale() {
@@ -52,8 +55,8 @@ function isPluggedIn() {
     var devices = HID.devices();
     var scaleFound = false;
 
-    //check through list of devices, see if any of them are the scale - if not, it's not plugged in or otherwise not registered to Windows
-    devices.forEach(function(device){
+    //check through list of devices, see if any of them are the scale - if not, it's not plugged in or otherwise not registered to the OS
+    devices.forEach(function (device) {
         if (device.vendorId.toFixed() == VID && device.productId.toFixed() == PID) {
             //console.log("Scale found!");
             scaleFound = true;
@@ -143,20 +146,13 @@ function getByte() {
     */
 
     //register initial byte as all fields with 0, if the scale cannot be reached for whatever reason (likely unplugged) this will be returned instead.
-    var byte = [0,0,0,0,0];
-    //if scale is plugged in, attempt to get data packet from scale with a timeout of 250 ms
+    var byte = [0, 0, 0, 0, 0];
+    //return current byte if plugged in, else return empty byte
     if (isPluggedIn()) {
-        try {
-            byte = scale.readTimeout(1000);
-        } catch (err) {
-            console.log("Error caught while attempting to get scale packet, has the scale been unplugged?");
-        }
-        if(byte[4] == undefined) {
-            console.log("byte 4 is undefined");
-        }
-        console.log(byte);
-        return byte;
+        byte = currentByte
+        //console.log(byte);
     }
+    return byte;
 }
 
 function pause() {
@@ -183,8 +179,8 @@ function keepRegistered() {
 
 function listenScale() {
 
-    //internal function used to begin listening for weight changes
-    scale.on("error", function(err){
+    //internal function used to begin listening for weight changes & keeping current registered byte up-to-date
+    scale.on("error", function (err) {
         console.log("Error occurred while listening, stopping data stream listener... (scale disconnected?)");
         scaleEvents.emit("change", 0);
         readRegistered = false;
@@ -193,25 +189,22 @@ function listenScale() {
     var lastWeight;
 
     if (!readRegistered) {
-        scale.on("data", function(data){
+        scale.on("data", function (data) {
             readRegistered = true;
             //console.log("logging data!")
-            //if data is not a number, stop (for linux's sake)
-            if (!isNaN(data[4]) || data[4] == undefined) {
-                var currentWeight = data[4];
-            } else {
-                console.log("nan received!!!!! "+data[4])
-            }
 
-            //if weight has changed since last event, emit the event
-            if (currentWeight != lastWeight && (!paused && isPluggedIn())) {
-                //console.log("Emitting!");
-                //registerScale();
-                scaleEvents.emit("change", getWeightLb());
-                console.log(data[4]);
+            //var currentWeight = data[4];
+            //if data packet is malformed (occurs often on linux for some reason), then ignore the packet
+            if (data[4] != undefined) {
+                //if weight has changed since last event, emit the event
+                if (currentByte[4] != data[4] && (!paused && isPluggedIn())) {
+                    //console.log("Emitting!");
+                    currentByte = data;
+                    scaleEvents.emit("change", getWeightLb());
+                } else {
+                    currentByte = data;
+                }
             }
-
-            lastWeight = currentWeight;
         });
     }
 
@@ -238,7 +231,7 @@ function getWeightLb() {
     //3: kg
     //11: oz
     //12: pounds, do nothing
-    switch(data[2]) {
+    switch (data[2]) {
         case 3:
             //convert to pounds from kg
             weight *= 2.2;
