@@ -224,9 +224,13 @@ function getWeightLb() {
     var data = getByte();
 
     //registerScale();
+    //initialize weight
+    var weight;
+    //main weight component is equal to the data scaling times the MSB
+    weight = data[3] * data[5]
 
-    //get weight from scale data packet
-    var weight = data[4];
+    //add remaining weight
+    var weight = weight + data[4];
     //add correct decimal point
     weight /= 100;
 
